@@ -1,0 +1,49 @@
+Doctor Appointment booking system:
+
+
+- Patients
+- Doctor (Individuals)
+- Admin (Owner of the system)
+
+
+- Allow doctors to create their profiles (Full name, phone, email, address, gender, specialty, picture, certificate, bio)
+After successful verification, the doctor can do the following:
+ - Set availability schedule and time-slots.
+ - Set ticket price (no less than $1).
+ - Mark appointments as completed.
+ - Optionally, take notes on appointments.
+ - Set maximum appointments per time-slot.
+ - Revenue report.
+
+
+- Patients can easily make appointments: (Full name, address, email, gender)
+ - Search for doctors (by location, specialty, gender, availability)
+ - Make appointments
+ - Make payments
+ - Provide previous appointments and payments.
+ - Cancel or change appointment schedule.
+ - Review doctor service.
+
+
+* Secure system (Auth): Social login (Google, Facebook?). Register users on the first login.
+* Prevent double appointments.
+* Appointments cannot be changed if it's due in less than 24 hrs.
+* Notify patients about appointment	time (by email).
+* Prevent overlapping appointments.
+* Automated payments (eDahab, Zaad/Sahal/EVC?).
+
+
+- Admin
+ - Verify doctors.
+ - User management (Create other admin users, disable users).
+ - Terminate doctors.
+ - Revenue Report.
+
+
+Bonus points:
+ - Articles posted by doctors.
+ - Electronic prescriptions.
+ - SMS Notifications.
+ - Chat with doctors.
+ - Discounts.
+
