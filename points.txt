@@ -18,7 +18,7 @@ After successful verification, the doctor can do the following:
 
 - Patients can easily make appointments: (Full name, address, email, gender)
  - Search for doctors (by location, specialty, gender, availability)
- - Make appointments
+ - Make appointments to a certain doctor.
  - Make payments
  - Provide previous appointments and payments.
  - Cancel or change appointment schedule.
@@ -46,4 +46,4 @@ Bonus points:
  - SMS Notifications.
  - Chat with doctors.
  - Discounts.
-
+ - Accounting: Implement Accounts and Journal Entries.
