@@ -1,4 +1,11 @@
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("Default");
+builder.Services.AddDbContext<Data.AppointmentsDbContext>(
+	config => config.UseNpgsql(connectionString)
+);
 
 builder.Services.AddControllers();
 

@@ -4,6 +4,7 @@ public class Doctor
 {
 	public int Id { get; set; }
 
+	public int UserId { get; set; }
 	public User User { get; set; } = new();
 
 	public string Phone { get; set; } = "";
