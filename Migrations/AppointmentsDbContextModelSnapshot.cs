@@ -68,7 +68,7 @@ namespace appointments.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Bookings");
+                    b.ToTable("Bookings", (string)null);
                 });
 
             modelBuilder.Entity("Models.BookingNote", b =>
@@ -93,7 +93,7 @@ namespace appointments.Migrations
 
                     b.HasIndex("BookingId");
 
-                    b.ToTable("Notes");
+                    b.ToTable("Notes", (string)null);
                 });
 
             modelBuilder.Entity("Models.Doctor", b =>
@@ -140,7 +140,7 @@ namespace appointments.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Doctors");
+                    b.ToTable("Doctors", (string)null);
                 });
 
             modelBuilder.Entity("Models.Review", b =>
@@ -168,7 +168,7 @@ namespace appointments.Migrations
 
                     b.HasIndex("BookingId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("Models.Schedule", b =>
@@ -199,7 +199,7 @@ namespace appointments.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("Schedules");
+                    b.ToTable("Schedules", (string)null);
                 });
 
             modelBuilder.Entity("Models.TimeSlot", b =>
@@ -233,7 +233,7 @@ namespace appointments.Migrations
 
                     b.HasIndex("ScheduleId");
 
-                    b.ToTable("TimeSlots");
+                    b.ToTable("TimeSlots", (string)null);
                 });
 
             modelBuilder.Entity("Models.User", b =>
@@ -267,7 +267,7 @@ namespace appointments.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Models.Booking", b =>

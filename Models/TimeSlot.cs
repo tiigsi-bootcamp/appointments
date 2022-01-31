@@ -4,6 +4,7 @@ public class TimeSlot
 {
 	public int Id { get; set; }
 
+	public int ScheduleId { get; set; }
 	public Schedule Schedule { get; set; } = new();
 
 	public TimeOnly StartTime { get; set; }

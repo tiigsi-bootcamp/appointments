@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using Data;
+using Models;
 
 namespace Controllers;
 
@@ -20,5 +21,28 @@ public class UsersController : ControllerBase
 	{
 		var users = _context.Users.ToList();
 		return Ok(users);
+	}
+
+	// GET /users/5
+	[HttpGet("{id}")]
+	public IActionResult GetUser(int id)
+	{
+		var user = _context.Users.Find(id);
+		if (user is null)
+		{
+			return NotFound();
+		}
+
+		return Ok(user);
+	}
+
+	// POST /users
+	[HttpPost]
+	public IActionResult Add([FromBody] User user)
+	{
+		_context.Users.Add(user);
+		_context.SaveChanges();
+
+		return Created("", user);
 	}
 }
