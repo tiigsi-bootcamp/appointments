@@ -1,12 +1,7 @@
-namespace Models;
+namespace ViewModels;
 
-public class Doctor
+public class DoctorViewModel
 {
-	public int Id { get; set; }
-
-	public int UserId { get; set; }
-	public User? User { get; set; } // Navigation property.
-
 	public string Phone { get; set; } = "";
 
 	public string Specialty { get; set; } = "";
@@ -18,8 +13,4 @@ public class Doctor
 	public string Certificate { get; set; } = "";
 
 	public decimal TicketPrice { get; set; }
-
-	public bool IsVerified { get; set; }
-
-	public DateTime CreatedAt { get; set; }
 }

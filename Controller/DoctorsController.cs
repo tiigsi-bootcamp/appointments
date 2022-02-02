@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 using Data;
+using Models;
+using ViewModels;
 
 namespace Controllers;
 
@@ -16,10 +19,50 @@ public class DoctorsController : ControllerBase
 
 	// GET /doctors
 	[HttpGet]
-	public IActionResult GetDoctors()
+	public IActionResult GetAll()
 	{
-		var doctors = _context.Doctors.ToList();
+		// TODO: Add pagination and filtering.
+		var doctors = _context.Doctors.Include(d => d.User).ToList();
 
 		return Ok(doctors);
+	}
+
+	// GET /doctors/5
+	[HttpGet("{id}", Name = nameof(GetSingle))]
+	public IActionResult GetSingle(int id)
+	{
+		var doctor = _context.Doctors.Include(d => d.User)
+			.SingleOrDefault(d => d.Id == id);
+		if (doctor is null)
+		{
+			return NotFound(new
+			{
+				message = "The requested doctor could not be found!"
+			});
+		}
+
+		return Ok(doctor);
+	}
+
+	// POST /doctors
+	[HttpPost]
+	public IActionResult Add([FromBody] DoctorViewModel doctorViewModel) // Over-posting attack.
+	{
+		var doctor = new Doctor
+		{
+			Phone = doctorViewModel.Phone,
+			Specialty = doctorViewModel.Specialty,
+			Bio = doctorViewModel.Bio,
+			Certificate = doctorViewModel.Certificate,
+			CreatedAt = DateTime.UtcNow,
+			Picture = doctorViewModel.Picture,
+			TicketPrice = doctorViewModel.TicketPrice,
+			UserId = 3 // TODO: Use the currently logged in users' id.
+		};
+
+		_context.Doctors.Add(doctor);
+		_context.SaveChanges();
+
+		return Created(nameof(GetSingle), doctor);
 	}
 }
