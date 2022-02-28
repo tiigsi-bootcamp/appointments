@@ -9,9 +9,11 @@ public class Schedule
 	public string Location { get; set; } = "";
 
 	public int DoctorId { get; set; }
-	public Doctor Doctor { get; set; } = new();
+	public Doctor? Doctor { get; set; }
 
 	public bool IsAvailable { get; set; }
+
+	public List<TimeSlot> TimeSlots { get; set; } = new();
 
 	public DateTime CreatedAt { get; set; }
 }
