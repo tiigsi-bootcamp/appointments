@@ -9,3 +9,8 @@ public class ScheduleViewModel
 	[Required]
 	public string Location { get; set; } = "";
 }
+
+public class ModifyScheduleViewModel : ScheduleViewModel
+{
+	public bool IsAvailable { get; set; }
+}

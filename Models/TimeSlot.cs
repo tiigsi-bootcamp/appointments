@@ -7,9 +7,9 @@ public class TimeSlot
 	public int ScheduleId { get; set; }
 	public Schedule Schedule { get; set; }
 
-	public TimeOnly StartTime { get; set; }
+	public TimeSpan StartTime { get; set; }
 
-	public TimeOnly EndTime { get; set; }
+	public TimeSpan EndTime { get; set; }
 
 	public string Description { get; set; } = "";
 

@@ -5,7 +5,7 @@ public class Doctor
 	public int Id { get; set; }
 
 	public int UserId { get; set; }
-	public User? User { get; set; } // Navigation property.
+	public User User { get; set; } // Navigation property.
 
 	public string Phone { get; set; } = "";
 

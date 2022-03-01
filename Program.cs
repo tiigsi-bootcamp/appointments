@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +8,8 @@ builder.Services.AddDbContext<Data.AppointmentsDbContext>(
 	config => config.UseNpgsql(connectionString)
 );
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+	.AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 // Add Swagger services.
 builder.Services.AddEndpointsApiExplorer();

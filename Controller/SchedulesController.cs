@@ -50,6 +50,27 @@ public class SchedulesController : ControllerBase
 		return Created("", schedule);
 	}
 
+	// PUT /schedules/{id}
+	[HttpPut("{id}")]
+	public IActionResult Update(int id, [FromBody]ModifyScheduleViewModel viewModel)
+	{
+		var schedule = _context.Schedules.Find(id);
+		if (schedule is null) 
+		{
+			return BadRequest("Invalid schedule");
+		}
+
+		// TODO: Only owner of the schedule can update it.
+
+		schedule.Location = viewModel.Location;
+		schedule.Day = viewModel.Day;
+		schedule.IsAvailable = viewModel.IsAvailable;
+
+		_context.SaveChanges();
+
+		return NoContent();
+	}
+
 	// POST /schedules/{id}/timeslots
 	[HttpPost("{id}/timeslots")]
 	public IActionResult AddTimeSlot(int id, [FromBody]TimeSlotViewModel viewModel)
@@ -62,8 +83,8 @@ public class SchedulesController : ControllerBase
 
 		var timeslot = new TimeSlot
 		{
-			StartTime = TimeOnly.FromTimeSpan(viewModel.StartTime),
-			EndTime = TimeOnly.FromTimeSpan(viewModel.EndTime),
+			StartTime = viewModel.StartTime,
+			EndTime = viewModel.EndTime,
 			Description = viewModel.Description,
 			MaxAppointments = viewModel.MaxAppointments,
 			ScheduleId = schedule.Id,
@@ -75,4 +96,6 @@ public class SchedulesController : ControllerBase
 
 		return Created("", timeslot);
 	}
+
+	// PUT /schedule/timeslots/5
 }
