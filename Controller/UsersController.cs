@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using Data;
 using Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Controllers;
 
@@ -17,17 +18,17 @@ public class UsersController : ControllerBase
 
 	// GET /users
 	[HttpGet]
-	public IActionResult Get()
+	public  async Task<IActionResult> Get()
 	{
-		var users = _context.Users.OrderByDescending(u => u.FullName).ToList();
+		var users = await _context.Users.OrderByDescending(u => u.FullName).ToListAsync();
 		return Ok(users);
 	}
 
 	// GET /users/5
 	[HttpGet("{id}")]
-	public IActionResult GetUser(int id)
+	public  async Task<IActionResult> GetUser(int id)
 	{
-		var user = _context.Users.Find(id);
+		var user = await _context.Users.FindAsync(id);
 		if (user is null)
 		{
 			return NotFound();
@@ -38,19 +39,19 @@ public class UsersController : ControllerBase
 
 	// POST /users
 	[HttpPost]
-	public IActionResult Add([FromBody] User user)
+	public  async Task<IActionResult> Add([FromBody] User user)
 	{
 		_context.Users.Add(user);
-		_context.SaveChanges();
+		await _context.SaveChangesAsync();
 
 		return Created("", user);
 	}
 
 	// PUT /users/5
 	[HttpPut("{id}")]
-	public IActionResult Update(int id, [FromBody]User user)
+	public  async Task<IActionResult> Update(int id, [FromBody]User user)
 	{
-		var targetUser = _context.Users.Find(id);
+		var targetUser = await _context.Users.FindAsync(id);
 		if (targetUser is null)
 		{
 			return BadRequest();
@@ -62,23 +63,23 @@ public class UsersController : ControllerBase
 		targetUser.Gender = user.Gender;
 		
 		_context.Users.Update(targetUser);
-		_context.SaveChanges();
+		await _context.SaveChangesAsync();
 
 		return NoContent();
 	}
 
 	// DELETE /users/5
 	[HttpDelete("{id}")]
-	public IActionResult Delete(int id)
+	public  async Task<IActionResult> Delete(int id)
 	{
-		var user = _context.Users.Find(id);
+		var user = await _context.Users.FindAsync(id);
 		if (user is null)
 		{
 			return BadRequest();
 		}
 
 		_context.Users.Remove(user);
-		_context.SaveChanges();
+		await _context.SaveChangesAsync();
 
 		return NoContent();
 	}

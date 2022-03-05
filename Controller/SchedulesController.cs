@@ -20,20 +20,20 @@ public class SchedulesController : ControllerBase
 	
 	// GET /schedules
 	[HttpGet]
-	public IActionResult GetMySchedules()
+	public  async Task<IActionResult> GetMySchedules()
 	{
 		var doctorId = 4; // TODO: Get the actual doctorId from the session.
-		var schedules = _context.Schedules
+		var schedules = await _context.Schedules
 			.Include(s => s.TimeSlots)
 			.Where(s => s.DoctorId == doctorId)
-			.ToList();
+			.ToListAsync();
 
 		return Ok(schedules);
 	}
 
 	// POST /schedules
 	[HttpPost]
-	public IActionResult Add(ScheduleViewModel viewModel)
+	public  async Task<IActionResult> Add(ScheduleViewModel viewModel)
 	{
 		var schedule = new Schedule
 		{
@@ -45,16 +45,16 @@ public class SchedulesController : ControllerBase
 		};
 
 		_context.Schedules.Add(schedule);
-		_context.SaveChanges();
+		await _context.SaveChangesAsync();
 
 		return Created("", schedule);
 	}
 
 	// PUT /schedules/{id}
 	[HttpPut("{id}")]
-	public IActionResult Update(int id, [FromBody]ModifyScheduleViewModel viewModel)
+	public  async Task<IActionResult> Update(int id, [FromBody]ModifyScheduleViewModel viewModel)
 	{
-		var schedule = _context.Schedules.Find(id);
+		var schedule = await _context.Schedules.FindAsync(id);
 		if (schedule is null) 
 		{
 			return BadRequest("Invalid schedule");
@@ -66,16 +66,16 @@ public class SchedulesController : ControllerBase
 		schedule.Day = viewModel.Day;
 		schedule.IsAvailable = viewModel.IsAvailable;
 
-		_context.SaveChanges();
+	   await _context.SaveChangesAsync();
 
 		return NoContent();
 	}
 
 	// POST /schedules/{id}/timeslots
 	[HttpPost("{id}/timeslots")]
-	public IActionResult AddTimeSlot(int id, [FromBody]TimeSlotViewModel viewModel)
+	public  async Task<IActionResult> AddTimeSlot(int id, [FromBody]TimeSlotViewModel viewModel)
 	{
-		var schedule = _context.Schedules.Find(id);
+		var schedule = await _context.Schedules.FindAsync(id);
 		if (schedule is null)
 		{
 			return BadRequest($"Schedule with id {id} cannot be recognized.");
@@ -92,7 +92,7 @@ public class SchedulesController : ControllerBase
 		};
 
 		_context.TimeSlots.Add(timeslot);
-		_context.SaveChanges();
+		await _context.SaveChangesAsync();
 
 		return Created("", timeslot);
 	}
