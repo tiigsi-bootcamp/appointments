@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 using Data;
 using Models;
@@ -20,6 +21,7 @@ public class BookingsController : ControllerBase
 
 	// GET /bookings
 	[HttpGet]
+	[Authorize]
 	public async Task<IActionResult> GetAll()
 	{
 		var bookings = await _context.Bookings.ToListAsync();
