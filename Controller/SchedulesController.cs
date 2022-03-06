@@ -98,4 +98,25 @@ public class SchedulesController : ControllerBase
 	}
 
 	// PUT /schedule/timeslots/5
+	[HttpPut("timeslots/{id}")]
+
+	public async Task<IActionResult> updateTimeslot(int id, [FromBody] TimeSlotViewModel timeSlot)
+	{
+        var target = _context.TimeSlots.Find(id);
+
+		if(target is null)
+		{
+			return BadRequest("Not found !!");
+		}
+
+	    target.StartTime = timeSlot.StartTime;
+		target.EndTime = timeSlot.EndTime;
+		target.Description = timeSlot.Description;
+		target.MaxAppointments = timeSlot.MaxAppointments;
+
+		_context.Update(target);
+		await _context.SaveChangesAsync();
+
+		return Ok(" Update saccuss !!");
+	}
 }

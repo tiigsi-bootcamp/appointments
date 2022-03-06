@@ -75,4 +75,22 @@ public class BookingsController : ControllerBase
 
 		return Created("", booking);
 	}
+
+	[HttpPut("{id}")]
+	
+	public async Task<IActionResult> upadate(int id, [FromBody] BookingViewModel booking)
+	{
+		var target = _context.Bookings.Find(id);
+		if(target is null)
+		{
+			return BadRequest(" not found");
+		}
+
+		target.IsCompleted = booking.IsCompleted;
+
+	    _context.Bookings.Update(target);
+		await _context.SaveChangesAsync();
+
+		return Content("Update success !");
+	}
 }
