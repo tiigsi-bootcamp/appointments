@@ -34,6 +34,19 @@ public class BookingsController : ControllerBase
 		var timeSlot = await _context.TimeSlots
 			.Include(ts => ts.Schedule).ThenInclude(s => s.Doctor)
 			.SingleOrDefaultAsync(ts => ts.Id == viewModel.TimeSlotId);
+
+		var booking = await _context.Bookings.FirstOrDefaultAsync();
+
+		if (booking is null)
+        {
+            return BadRequest("Selected booking cannot be found ");
+        }
+
+        if (booking.TimeSlotId == viewModel.TimeSlotId)
+        {
+            return BadRequest("Selected timeslot is already taken");
+        }
+
 		if (timeSlot is null)
 		{
 			return BadRequest("Selected time-slot could not be recognized.");
