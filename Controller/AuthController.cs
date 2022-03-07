@@ -1,7 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Controllers;
@@ -9,19 +12,38 @@ namespace Controllers;
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
+	private readonly AppointmentsDbContext _context;
+
+	public AuthController(AppointmentsDbContext context)
+	{
+		_context = context;
+	}
+
 	// POST /auth/login
 	[HttpPost("login")]
-	public IActionResult Login()
+	[AllowAnonymous]
+	public async Task<IActionResult> Login(string email)
 	{
-		// TODO: Validate user information.
+		// TODO: Implement Google login.
+		
+		var user = await _context.Users
+			.SingleOrDefaultAsync(u => u.Email == email);
+		if (user is null)
+		{
+			return BadRequest("Invalid login attempt");
+		}
 
 		var now = DateTime.Now;
 
 		var claims =  new List<Claim>
 		{
-			new("sub", "1"),
-			new("Fullname", "User Full name")
+			new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+			new("Fullname", user.FullName),
+			new("gender", user.Gender),
+			new("email", user.Email),
 		};
+
+		// TODO: Check if the user is a doctor and add a doctorId claim if so.
 
 		var keyInput = "random_text_with_at_least_32_chars";
 

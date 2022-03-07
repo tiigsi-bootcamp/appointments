@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Data;
 using Models;
 using ViewModels;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Helpers;
 
 namespace Controllers;
 
@@ -57,7 +60,7 @@ public class DoctorsController : ControllerBase
 			CreatedAt = DateTime.UtcNow,
 			Picture = doctorViewModel.Picture,
 			TicketPrice = doctorViewModel.TicketPrice,
-			UserId = 3 // TODO: Use the currently logged in users' id.
+			UserId = User.GetId()
 		};
 
 		_context.Doctors.Add(doctor);
