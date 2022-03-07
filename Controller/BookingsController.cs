@@ -50,6 +50,11 @@ public class BookingsController : ControllerBase
 		{
 			return BadRequest("Doctor is not available at the selected day!");
 		}
+
+		if(timeSlot.MaxAppointments < timeSlot.Bookings.Count())
+		{
+           return BadRequest(" Wuu kaa buuxaa manta!! ");
+		}
 		
 		var ticketPrice = timeSlot.Schedule.Doctor.TicketPrice;
 		var rate = 0.02m;

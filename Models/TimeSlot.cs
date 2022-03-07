@@ -16,6 +16,8 @@ public class TimeSlot
 	public string Description { get; set; } = "";
 
 	public int MaxAppointments { get; set; }
+	
+	public List<Booking> Bookings { get; set; } = new();
 
 	public DateTime CreatedAt { get; set; }
 }
