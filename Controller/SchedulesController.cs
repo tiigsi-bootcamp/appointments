@@ -61,6 +61,11 @@ public class SchedulesController : ControllerBase
 		}
 
 		// TODO: Only owner of the schedule can update it.
+		var doctorId = 4;
+		if (schedule.DoctorId != doctorId)
+		{
+			return BadRequest("You don't own that schedule.");
+		}
 
 		schedule.Location = viewModel.Location;
 		schedule.Day = viewModel.Day;

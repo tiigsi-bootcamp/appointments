@@ -1,18 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 using Data;
 using Models;
 using ViewModels;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Helpers;
 
 namespace Controllers;
 
 [Route("[controller]")]
 [ApiController]
+[Authorize]
 public class BookingsController : ControllerBase
 {
 	private readonly AppointmentsDbContext _context;
-	
+
 	public BookingsController(AppointmentsDbContext context)
 	{
 		_context = context;
@@ -29,7 +34,7 @@ public class BookingsController : ControllerBase
 
 	// POST /bookings
 	[HttpPost]
-	public async Task<IActionResult> Add([FromBody]BookingViewModel viewModel)
+	public async Task<IActionResult> Add([FromBody] BookingViewModel viewModel)
 	{
 		var timeSlot = await _context.TimeSlots
 			.Include(ts => ts.Schedule).ThenInclude(s => s.Doctor)
@@ -61,7 +66,12 @@ public class BookingsController : ControllerBase
 		{
 			return BadRequest("Doctor is not available at the selected day!");
 		}
-		
+
+		if (timeSlot.MaxAppointments <= timeSlot.Bookings.Count)
+		{
+			return BadRequest("Wuu kaa buuxaa manta!!");
+		}
+
 		var ticketPrice = timeSlot.Schedule.Doctor.TicketPrice;
 		var rate = 0.02m;
 		var commission = ticketPrice * rate;
@@ -73,7 +83,7 @@ public class BookingsController : ControllerBase
 		{
 			AppointmentTime = new DateTime(viewModel.AppointmentTime.Ticks, DateTimeKind.Utc),
 			IsCompleted = false,
-			UserId = 5, // TODO: Get the userId from session.
+			UserId = User.GetId(),
 			CreatedAt = DateTime.UtcNow,
 			TransactionId = $"{transactionId}",
 			PaidAmount = ticketPrice,
