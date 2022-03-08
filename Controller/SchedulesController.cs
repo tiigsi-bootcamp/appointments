@@ -41,7 +41,7 @@ public class SchedulesController : ControllerBase
 			Day = viewModel.Day,
 			Location = viewModel.Location,
 			CreatedAt = DateTime.UtcNow,
-			DoctorId = User.GetDoctorId();,
+			DoctorId = User.GetDoctorId(),
 			IsAvailable = true
 		};
 

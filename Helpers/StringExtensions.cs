@@ -2,8 +2,8 @@ namespace Helpers;
 
 public static class StringExtensions
 {
-	public static bool IsEmpty(this string name)
+	public static bool IsEmpty(this string input)
 	{
-		return string.IsNullOrEmpty(name);
+		return string.IsNullOrEmpty(input);
 	}
 }

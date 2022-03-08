@@ -22,20 +22,35 @@ public class DoctorsController : ControllerBase
 
 	// GET /doctors
 	[HttpGet]
-	public IActionResult GetAll()
+	public async Task<IActionResult> GetAll(int page, int size, string phone)
 	{
-		// TODO: Add pagination and filtering.
-		var doctors = _context.Doctors.Include(d => d.User).ToList();
+		// skip = page * size;
+
+		var query = _context.Doctors
+			.Include(d => d.User)
+			.Skip(page * size)
+			.Take(size);
+
+		if (!string.IsNullOrEmpty(phone))
+		{
+			query = query.Where(d => d.Phone == phone);
+		}
+
+		await Task.Delay(10 * 1_000, HttpContext.RequestAborted);
+
+		var doctors = await query
+			.OrderBy(d => d.Id)
+			.ToListAsync(HttpContext.RequestAborted);
 
 		return Ok(doctors);
 	}
 
 	// GET /doctors/5
 	[HttpGet("{id}", Name = nameof(GetSingle))]
-	public IActionResult GetSingle(int id)
+	public async Task<IActionResult> GetSingle(int id)
 	{
-		var doctor = _context.Doctors.Include(d => d.User)
-			.SingleOrDefault(d => d.Id == id);
+		var doctor = await _context.Doctors.Include(d => d.User)
+			.SingleOrDefaultAsync(d => d.Id == id, HttpContext.RequestAborted);
 		if (doctor is null)
 		{
 			return NotFound(new
