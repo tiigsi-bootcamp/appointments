@@ -8,5 +8,4 @@ public class BookingViewModel
 
 	public string PaymentMethod { get; set; } = "";
 
-	public bool IsCompleted { get; set; }
 }

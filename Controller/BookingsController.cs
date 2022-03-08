@@ -42,16 +42,6 @@ public class BookingsController : ControllerBase
 
 		var booking = await _context.Bookings.FirstOrDefaultAsync();
 
-		if (booking is null)
-        {
-            return BadRequest("Selected booking cannot be found ");
-        }
-
-        if (booking.TimeSlotId == viewModel.TimeSlotId)
-        {
-            return BadRequest("Selected timeslot is already taken");
-        }
-
 		if (timeSlot is null)
 		{
 			return BadRequest("Selected time-slot could not be recognized.");
@@ -100,21 +90,4 @@ public class BookingsController : ControllerBase
 	}
 
 	
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody]BookingViewModel bookingVM)
-        {
-            var booking = await _context.Bookings.FindAsync(id);
-
-            if (booking is null)
-            {
-                return BadRequest($"The booking with this id {id}, could not be found.");
-            }
-
-            booking.IsCompleted = bookingVM.IsCompleted;
-
-            _context.Update(booking);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
 }

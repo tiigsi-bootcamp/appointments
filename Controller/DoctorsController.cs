@@ -22,19 +22,19 @@ public class DoctorsController : ControllerBase
 
 	// GET /doctors
 	[HttpGet]
-	public async Task <IActionResult> GetAll()
+	public IActionResult GetAll()
 	{
 		// TODO: Add pagination and filtering.
-		var doctors = await _context.Doctors.Include(d => d.User).ToListAsync();
+		var doctors =  _context.Doctors.Include(d => d.User).ToList();
 
 		return Ok(doctors);
 	}
 
 	// GET /doctors/5
 	[HttpGet("{id}", Name = nameof(GetSingle))]
-	public async Task<IActionResult> GetSingle(int id)
+	public IActionResult GetSingle(int id)
 	{
-		var doctor = await _context.Doctors.Include(d => d.User)
+		var doctor =  _context.Doctors.Include(d => d.User)
 			.SingleOrDefaultAsync(d => d.Id == id);
 		if (doctor is null)
 		{
@@ -49,7 +49,7 @@ public class DoctorsController : ControllerBase
 
 	// POST /doctors
 	[HttpPost]
-	public async Task<IActionResult> Add([FromBody] DoctorViewModel doctorViewModel) // Over-posting attack.
+	public IActionResult Add([FromBody] DoctorViewModel doctorViewModel) // Over-posting attack.
 	{
 		var doctor =  new Doctor
 		{
@@ -64,7 +64,7 @@ public class DoctorsController : ControllerBase
 		};
 
 		_context.Doctors.Add(doctor);
-	    await _context.SaveChangesAsync();
+	     _context.SaveChanges();
 
 		return Created(nameof(GetSingle), doctor);
 	}
