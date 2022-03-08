@@ -43,7 +43,12 @@ public class AuthController : ControllerBase
 			new("email", user.Email),
 		};
 
-		// TODO: Check if the user is a doctor and add a doctorId claim if so.
+		   var doctor = await _context.Doctors.FirstOrDefaultAsync(u => u.UserId == user.Id);
+
+            if (doctor is not null)
+            {
+                claims.Add(new Claim(JwtRegisteredClaimNames.Sub, doctor.Id.ToString()));
+            }
 
 		var keyInput = "random_text_with_at_least_32_chars";
 
