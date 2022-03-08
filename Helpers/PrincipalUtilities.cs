@@ -15,4 +15,14 @@ public static class PrincipalUtilities
 
 		return 0;
 	}
+
+	public static int GetDoctorId(this ClaimsPrincipal principal)
+    {
+        var isConversionSuccessful = int.TryParse(principal.FindFirst("DoctorId").Value, out var docterId);
+        if(isConversionSuccessful)
+        {
+            return docterId;
+        }
+        return 0;
+    }
 }

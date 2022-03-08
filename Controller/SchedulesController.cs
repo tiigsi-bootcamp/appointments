@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+using Helpers;
 using Data;
 using Models;
 using ViewModels;
@@ -22,7 +23,7 @@ public class SchedulesController : ControllerBase
 	[HttpGet]
 	public IActionResult GetMySchedules()
 	{
-		var doctorId = 4; // TODO: Get the actual doctorId from the session.
+		var doctorId = User.GetDoctorId(); 
 		var schedules = _context.Schedules
 			.Include(s => s.TimeSlots)
 			.Where(s => s.DoctorId == doctorId)
@@ -40,7 +41,7 @@ public class SchedulesController : ControllerBase
 			Day = viewModel.Day,
 			Location = viewModel.Location,
 			CreatedAt = DateTime.UtcNow,
-			DoctorId = 4,
+			DoctorId = User.GetDoctorId();,
 			IsAvailable = true
 		};
 
@@ -60,8 +61,7 @@ public class SchedulesController : ControllerBase
 			return BadRequest("Invalid schedule");
 		}
 
-		// TODO: Only owner of the schedule can update it.
-		var doctorId = 4;
+		var doctorId = User.GetDoctorId();
 		if (schedule.DoctorId != doctorId)
 		{
 			return BadRequest("You don't own that schedule.");
