@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 using Data;
 using Models;
 using ViewModels;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
 using Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Controllers;
 
 [Route("[controller]")]
+[Authorize]
 public class DoctorsController : ControllerBase
 {
 	private readonly AppointmentsDbContext _context;
@@ -35,8 +35,6 @@ public class DoctorsController : ControllerBase
 		{
 			query = query.Where(d => d.Phone == phone);
 		}
-
-		await Task.Delay(10 * 1_000, HttpContext.RequestAborted);
 
 		var doctors = await query
 			.OrderBy(d => d.Id)
@@ -64,9 +62,16 @@ public class DoctorsController : ControllerBase
 
 	// POST /doctors
 	[HttpPost]
-	public IActionResult Add([FromBody] DoctorViewModel doctorViewModel) // Over-posting attack.
+	public async Task<IActionResult> Add([FromBody] DoctorViewModel doctorViewModel) // Over-posting attack.
 	{
-		var doctor = new Doctor
+		var doctor = await _context.Doctors
+			.SingleOrDefaultAsync(d => d.UserId == User.GetId(), HttpContext.RequestAborted);
+		if (doctor is not null)
+		{
+			return BadRequest("You are already a doctor!");
+		}
+
+		doctor = new Doctor
 		{
 			Phone = doctorViewModel.Phone,
 			Specialty = doctorViewModel.Specialty,
@@ -79,7 +84,7 @@ public class DoctorsController : ControllerBase
 		};
 
 		_context.Doctors.Add(doctor);
-		_context.SaveChanges();
+		await _context.SaveChangesAsync(HttpContext.RequestAborted);
 
 		return Created(nameof(GetSingle), doctor);
 	}

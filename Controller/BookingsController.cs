@@ -38,6 +38,7 @@ public class BookingsController : ControllerBase
 	{
 		var timeSlot = await _context.TimeSlots
 			.Include(ts => ts.Schedule).ThenInclude(s => s.Doctor)
+			.Include(ts => ts.Bookings)
 			.SingleOrDefaultAsync(ts => ts.Id == viewModel.TimeSlotId);
 		if (timeSlot is null)
 		{

@@ -5,11 +5,13 @@ using Helpers;
 using Data;
 using Models;
 using ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Controllers;
 
 [Route("[controller]")]
 [ApiController]
+[Authorize]
 public class SchedulesController : ControllerBase
 {
 	private readonly AppointmentsDbContext _context;
@@ -18,45 +20,51 @@ public class SchedulesController : ControllerBase
 	{
 		_context = context;
 	}
-	
+
 	// GET /schedules
 	[HttpGet]
-	public IActionResult GetMySchedules()
+	public async Task<IActionResult> GetMySchedules()
 	{
-		var doctorId = User.GetDoctorId(); 
-		var schedules = _context.Schedules
+		var schedules = await _context.Schedules
 			.Include(s => s.TimeSlots)
-			.Where(s => s.DoctorId == doctorId)
-			.ToList();
+			.Where(s => s.Doctor.UserId == User.GetId())
+			.ToListAsync(HttpContext.RequestAborted);
 
 		return Ok(schedules);
 	}
 
 	// POST /schedules
 	[HttpPost]
-	public IActionResult Add(ScheduleViewModel viewModel)
+	public async Task<IActionResult> Add(ScheduleViewModel viewModel)
 	{
+		var doctor = await _context.Doctors
+			.SingleOrDefaultAsync(d => d.UserId == User.GetId(), HttpContext.RequestAborted);
+		if (doctor is null)
+		{
+			return BadRequest("You are not a doctor.");
+		}
+
 		var schedule = new Schedule
 		{
 			Day = viewModel.Day,
 			Location = viewModel.Location,
 			CreatedAt = DateTime.UtcNow,
-			DoctorId = User.GetDoctorId(),
+			DoctorId = doctor.Id,
 			IsAvailable = true
 		};
 
 		_context.Schedules.Add(schedule);
-		_context.SaveChanges();
+		await _context.SaveChangesAsync(HttpContext.RequestAborted);
 
 		return Created("", schedule);
 	}
 
 	// PUT /schedules/{id}
 	[HttpPut("{id}")]
-	public IActionResult Update(int id, [FromBody]ModifyScheduleViewModel viewModel)
+	public IActionResult Update(int id, [FromBody] ModifyScheduleViewModel viewModel)
 	{
 		var schedule = _context.Schedules.Find(id);
-		if (schedule is null) 
+		if (schedule is null)
 		{
 			return BadRequest("Invalid schedule");
 		}
@@ -78,7 +86,7 @@ public class SchedulesController : ControllerBase
 
 	// POST /schedules/{id}/timeslots
 	[HttpPost("{id}/timeslots")]
-	public IActionResult AddTimeSlot(int id, [FromBody]TimeSlotViewModel viewModel)
+	public IActionResult AddTimeSlot(int id, [FromBody] TimeSlotViewModel viewModel)
 	{
 		var schedule = _context.Schedules.Find(id);
 		if (schedule is null)
