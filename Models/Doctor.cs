@@ -20,6 +20,8 @@ public class Doctor
 	public decimal TicketPrice { get; set; }
 
 	public bool IsVerified { get; set; }
+	
+	public List<Schedule> schedules { get; set; } = new();
 
 	public DateTime CreatedAt { get; set; }
 }

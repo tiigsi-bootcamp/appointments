@@ -38,10 +38,18 @@ public class SchedulesController : ControllerBase
 	public async Task<IActionResult> Add(ScheduleViewModel viewModel)
 	{
 		var doctor = await _context.Doctors
+		    .Include(d => d.schedules)
 			.SingleOrDefaultAsync(d => d.UserId == User.GetId(), HttpContext.RequestAborted);
+		var checkDay = doctor.schedules.FirstOrDefault(s => s.Day == viewModel.Day);
+
 		if (doctor is null)
 		{
 			return BadRequest("You are not a doctor.");
+		}
+
+		if(checkDay is not null)
+		{
+			return BadRequest("You already have schedule in this day.");
 		}
 
 		var schedule = new Schedule
