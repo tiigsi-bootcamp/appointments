@@ -44,6 +44,15 @@ public class SchedulesController : ControllerBase
 			return BadRequest("You are not a doctor.");
 		}
 
+        var ScheduleExists = await _context
+                .Schedules
+                .FirstOrDefaultAsync(s => s.DoctorId == doctor.Id && viewModel.Day == s.Day);
+
+        if (ScheduleExists is not null)
+        {
+            return BadRequest("Schedule ku maanta wuu kaa buuxa !!");
+        }
+
 		var schedule = new Schedule
 		{
 			Day = viewModel.Day,
