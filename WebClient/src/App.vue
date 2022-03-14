@@ -12,7 +12,10 @@ import Footer from './components/Footer.vue';
 
   <div class="py-10"></div>
 
-  <RouterView />
+  <Suspense>
+    <RouterView />
+  </Suspense>
+  
   <Footer />
 
   <!-- Footer will go here -->
