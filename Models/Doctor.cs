@@ -22,4 +22,6 @@ public class Doctor
 	public bool IsVerified { get; set; }
 
 	public DateTime CreatedAt { get; set; }
+
+	public List<Schedule> Schedules { get; set; } = new();
 }

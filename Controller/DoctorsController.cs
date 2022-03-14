@@ -22,6 +22,7 @@ public class DoctorsController : ControllerBase
 
 	// GET /doctors
 	[HttpGet]
+	[AllowAnonymous]
 	public async Task<IActionResult> GetAll(int page, int size, string phone)
 	{
 		// skip = page * size;

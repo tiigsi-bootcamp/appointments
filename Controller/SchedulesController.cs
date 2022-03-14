@@ -38,21 +38,23 @@ public class SchedulesController : ControllerBase
 	public async Task<IActionResult> Add(ScheduleViewModel viewModel)
 	{
 		var doctor = await _context.Doctors
+			.Include(d => d.Schedules.Where(s => s.Day == viewModel.Day))
 			.SingleOrDefaultAsync(d => d.UserId == User.GetId(), HttpContext.RequestAborted);
 		if (doctor is null)
 		{
 			return BadRequest("You are not a doctor.");
 		}
 
-        var ScheduleExists = await _context
-                .Schedules
-                .FirstOrDefaultAsync(s => s.DoctorId == doctor.Id && viewModel.Day == s.Day);
+		if (!doctor.IsVerified)
+		{
+			return BadRequest("You need to be verified first.");
+		}
 
-        if (ScheduleExists is not null)
-        {
-            return BadRequest("Schedule ku maanta wuu kaa buuxa !!");
-        }
-
+		if (doctor.Schedules.Any())
+		{
+			return BadRequest("Schedule has been set already!!");
+		}
+		
 		var schedule = new Schedule
 		{
 			Day = viewModel.Day,
@@ -95,9 +97,9 @@ public class SchedulesController : ControllerBase
 
 	// POST /schedules/{id}/timeslots
 	[HttpPost("{id}/timeslots")]
-	public IActionResult AddTimeSlot(int id, [FromBody] TimeSlotViewModel viewModel)
+	public async Task<IActionResult> AddTimeSlot(int id, [FromBody] TimeSlotViewModel viewModel)
 	{
-		var schedule = _context.Schedules.Find(id);
+		var schedule = await _context.Schedules.FindAsync(new object[]{ id }, HttpContext.RequestAborted);
 		if (schedule is null)
 		{
 			return BadRequest($"Schedule with id {id} cannot be recognized.");
@@ -114,7 +116,7 @@ public class SchedulesController : ControllerBase
 		};
 
 		_context.TimeSlots.Add(timeslot);
-		_context.SaveChanges();
+		await _context.SaveChangesAsync(HttpContext.RequestAborted);
 
 		return Created("", timeslot);
 	}

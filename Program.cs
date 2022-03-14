@@ -6,6 +6,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
+Console.WriteLine($"Connection: {connectionString}");
 builder.Services.AddDbContext<Data.AppointmentsDbContext>(
 	config => config.UseNpgsql(connectionString)
 );
@@ -37,10 +38,15 @@ builder.Services.AddAuthentication("Bearer") // Token: JWT = Json Web Token
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Enable/Configure CORS.
+builder.Services.AddCors(config => config.AddPolicy("Default", policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+
 var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseCors("Default");
 
 app.UseAuthentication();
 

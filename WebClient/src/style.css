@@ -1,0 +1,36 @@
+/* CSS Resets */
+@tailwind base;
+
+/* Tailwind custom made components .container */
+@tailwind components;
+
+/* Single responsibility classes e.g p-8 */
+@tailwind utilities;
+
+.button {
+  @apply px-5 py-2 rounded transition;
+}
+
+.button-pink {
+  @apply bg-pink-600 text-gray-200;
+}
+
+.menu.router-link-active {
+  @apply text-green-500 border-b-4 border-green-500;
+}
+.singin.router-link-active {
+  @apply text-pink-500 border-b-4 border-pink-500;
+}
+.singup.router-link-active {
+  @apply  bg-pink-700 px-5 py-2 ;
+}
+
+.nav-item {
+  @apply py-4 px-2 text-gray-600 hover:text-green-500 transition hover:border-b-4 hover:border-green-500;
+}
+
+.button-form {
+  @apply px-4  py-2 bg-cyan-400  hover:bg-cyan-500 tracking-widest
+   transition font-semibold
+   rounded;
+}
