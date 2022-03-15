@@ -15,3 +15,8 @@ export interface User {
 	fullName: string;
 	gender: string;
 }
+
+export interface Specialty {
+	specialty: string;
+	count: number;
+}

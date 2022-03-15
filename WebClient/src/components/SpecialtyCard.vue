@@ -13,7 +13,7 @@
 		</div>
 
 		<h1 class="text-2xl">{{ title }}</h1>
-		<span>{{ doctors }} Doctors</span>
+		<span>{{ doctors }} Doctor<span v-if="doctors > 1">s</span></span>
 
 		<slot name="bottom"></slot>
 	</div>

@@ -44,6 +44,23 @@ public class DoctorsController : ControllerBase
 		return Ok(doctors);
 	}
 
+	// GET /doctors/specialties
+	[HttpGet("specialties")]
+	[AllowAnonymous]
+	public async Task<IActionResult> GetSpecialties()
+	{
+		var specialties = await _context.Doctors
+			.GroupBy(d => d.Specialty)
+			.Select(g => new
+			{
+				Specialty = g.Key,
+				Count = g.Count()
+			})
+			.ToListAsync(HttpContext.RequestAborted);
+
+		return Ok(specialties);
+	}
+
 	// GET /doctors/5
 	[HttpGet("{id}", Name = nameof(GetSingle))]
 	public async Task<IActionResult> GetSingle(int id)

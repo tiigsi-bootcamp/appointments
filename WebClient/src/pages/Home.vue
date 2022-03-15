@@ -2,10 +2,16 @@
 import SpecialtyCard from '../components/SpecialtyCard.vue';
 import Button from '../components/Button.vue';
 import Footer from '../components/Footer.vue';
+import { Ref, ref } from 'vue';
+import { Specialty } from '../models/doctor';
+import { ApiService } from '../services/api-service';
 
 const handleSearch = () => {
 	console.log('Handle submit');
 };
+
+const data = await ApiService.getSpecialties();
+const specialties = ref(data);
 
 </script>
 
@@ -55,7 +61,7 @@ const handleSearch = () => {
 
 	<div class="w-full px-10 pb-10">
 		<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-			<SpecialtyCard title="Nerves" :doctors="10">
+			<SpecialtyCard v-for="specialty in specialties" :title="specialty.specialty" :doctors="specialty.count">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					class="h-10 w-10"
