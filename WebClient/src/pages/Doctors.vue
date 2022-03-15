@@ -16,7 +16,7 @@ let doctors = ref<Doctor[]>([]);
 // const result = await response.json();
 // doctors.value = result;
 
-doctors.value = await ApiService.getDoctors();
+doctors.value = await ApiService.getDoctors(0,10);
 
 console.log('list', doctors);
 
