@@ -10,7 +10,7 @@ const handleSearch = () => {
 	console.log('Handle submit');
 };
 
-const data = await ApiService.getSpecialties();
+const data = await ApiService.getData<Specialty[]>('doctors/specialties');
 const specialties = ref(data);
 
 </script>
@@ -61,7 +61,7 @@ const specialties = ref(data);
 
 	<div class="w-full px-10 pb-10">
 		<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-			<SpecialtyCard v-for="specialty in specialties" :title="specialty.specialty" :doctors="specialty.count">
+			<SpecialtyCard v-for="specialty in specialties" :title="specialty.specialty" :count="specialty.count">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					class="h-10 w-10"
@@ -78,7 +78,7 @@ const specialties = ref(data);
 				</svg>
 			</SpecialtyCard>
 
-			<SpecialtyCard title="Dental" :doctors="5">
+			<SpecialtyCard title="Dental" :count="5">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					class="h-10 w-10"
@@ -96,9 +96,9 @@ const specialties = ref(data);
 				</template>
 			</SpecialtyCard>
 
-			<SpecialtyCard title="Test" :doctors="20" />
+			<SpecialtyCard title="Test" :count="20" />
 
-			<SpecialtyCard title="Test" :doctors="2" />
+			<SpecialtyCard title="Test" :count="2" />
 		</div>
 	</div>
 </template>

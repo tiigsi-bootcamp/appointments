@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	defineProps<{ title: string, doctors: number }>();
+	defineProps<{ title: string, count: number }>();
 </script>
 
 <template>
@@ -13,7 +13,7 @@
 		</div>
 
 		<h1 class="text-2xl">{{ title }}</h1>
-		<span>{{ doctors }} Doctor<span v-if="doctors > 1">s</span></span>
+		<span>{{ count }} Doctor<span v-if="count > 1">s</span></span>
 
 		<slot name="bottom"></slot>
 	</div>

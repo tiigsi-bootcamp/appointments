@@ -3,20 +3,14 @@ import { Doctor, Specialty } from "../models/doctor";
 const API_URL = 'https://localhost:7028/';
 
 export class ApiService {
-	static async getDoctors(page: number, size: number): Promise<Doctor[]> {
-		const url = `doctors?page=${page}&size=${size}`;
-		return await this.getData(url);
+	static async getDoctors(page: number, size: number) {
+		return await this.getData(`doctors?page=${page}&size=${size}`) as Doctor[];
 	}
 
-	static async getSpecialties() {
-		const url = 'doctors/specialties';
-		return await this.getData(url) as Specialty[];
-	}
-
-	private static async getData(url: string){
+	static async getData<T>(url: string) {
 		const response = await fetch(API_URL + url);
 		const data = await response.json();
 
-		return data
+		return data as T;
 	}
 }

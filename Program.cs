@@ -39,14 +39,21 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Enable/Configure CORS.
-builder.Services.AddCors(config => config.AddPolicy("Default", policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+builder.Services.AddCors(config =>
+{
+	config.AddDefaultPolicy(policy => policy
+		.AllowAnyOrigin()
+		.AllowAnyMethod()
+		.AllowAnyHeader()
+	);
+});
 
 var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseCors("Default");
+app.UseCors();
 
 app.UseAuthentication();
 

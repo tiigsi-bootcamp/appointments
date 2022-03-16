@@ -15,6 +15,8 @@ public class DoctorsController : ControllerBase
 {
 	private readonly AppointmentsDbContext _context;
 
+	// Dependency Injection (DI).
+	// Constructor Injection.
 	public DoctorsController(AppointmentsDbContext context)
 	{
 		_context = context;
@@ -51,8 +53,8 @@ public class DoctorsController : ControllerBase
 	{
 		var specialties = await _context.Doctors
 			.GroupBy(d => d.Specialty)
-			.Select(g => new
-			{
+			.Select(g => new // Projection
+			{  // Anonymous Types.
 				Specialty = g.Key,
 				Count = g.Count()
 			})
