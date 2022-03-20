@@ -3,9 +3,11 @@ using System.Security.Claims;
 using System.Text;
 using Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using ViewModels;
 
 namespace Controllers;
 
@@ -19,16 +21,44 @@ public class AuthController : ControllerBase
 		_context = context;
 	}
 
+	// For testing to set user passwords manually.
+	[HttpPost]
+	public async Task<IActionResult> SetPassword([FromBody] LoginViewModel viewModel)
+	{
+		var user = await _context.Users
+			.SingleOrDefaultAsync(u => u.Email == viewModel.Email, HttpContext.RequestAborted);
+		if (user is null)
+		{
+			return BadRequest("Invalid user");
+		}
+
+		var hasher = new PasswordHasher<Models.User>();
+		var hashedPassword = hasher.HashPassword(user, viewModel.Password);
+
+		user.Password = hashedPassword;
+		await _context.SaveChangesAsync(HttpContext.RequestAborted);
+
+		return Ok(hashedPassword);
+	}
+
 	// POST /auth/login
 	[HttpPost("login")]
 	[AllowAnonymous]
-	public async Task<IActionResult> Login(string email)
+	public async Task<IActionResult> Login([FromBody] LoginViewModel viewModel)
 	{
 		// TODO: Implement Google login.
+		// TODO: Implement password login.
 
 		var user = await _context.Users
-			.SingleOrDefaultAsync(u => u.Email == email);
+			.SingleOrDefaultAsync(u => u.Email == viewModel.Email);
 		if (user is null)
+		{
+			return BadRequest("Invalid login attempt.");
+		}
+
+		var hasher = new PasswordHasher<Models.User>();
+		var verificationResult = hasher.VerifyHashedPassword(user, user.Password, viewModel.Password);
+		if (verificationResult is not PasswordVerificationResult.Success)
 		{
 			return BadRequest("Invalid login attempt.");
 		}
