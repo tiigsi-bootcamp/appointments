@@ -19,8 +19,8 @@ let doctors = ref<Doctor[]>([]);
 const page = 0;
 const size = 10;
 
-// FIXME: Make the parameters work.
-doctors.value = await ApiService.getData<Doctor[]>('doctors', page, size);
+doctors.value = await ApiService
+  .getData<Doctor[]>('doctors', { page, size, phone: '987654' });
 
 console.log('list', doctors);
 
