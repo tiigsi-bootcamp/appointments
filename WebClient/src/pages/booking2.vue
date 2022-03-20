@@ -12,7 +12,7 @@ import BookingDesgin from '../components/BookingDesgin.vue';
           h-full
           w-full
         "
-        src="images/istockphoto.jpg"
+        src="/images/istockphoto.jpg"
         alt="Doctor image not found"
       />
   </BookingDesgin>

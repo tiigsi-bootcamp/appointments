@@ -20,7 +20,7 @@ const page = 0;
 const size = 10;
 
 doctors.value = await ApiService
-  .getData<Doctor[]>('doctors', { page, size, phone: '987654' });
+  .getData<Doctor[]>('doctors', { page, size });
 
 console.log('list', doctors);
 
@@ -45,7 +45,7 @@ console.log('list', doctors);
     <DoctorsCard name="Xawa Abdi" specialty="Midwifery">
       <img
         class="shadow-md rounded-lg object-cover transition duration-300 hover:scale-90 h-full w-full"
-        src="images/istockphoto.jpg"
+        src="/images/istockphoto.jpg"
         alt="Doctor image not found"
       />
       <template v-slot:button>

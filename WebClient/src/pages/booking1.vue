@@ -11,7 +11,7 @@ import BookingDesgin from "../components/BookingDesgin.vue";
       object-cover
       object-right
       "
-      src="images/stoc.jpg"
+      src="/images/stoc.jpg"
     />
   </BookingDesgin>
 </template>

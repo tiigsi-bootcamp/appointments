@@ -8,7 +8,7 @@ defineProps<{ name: string, specialty: string }>();
 			<slot>
 				<img
 					class="shadow-md rounded-lg object-cover transition duration-300 hover:scale-90"
-					src="images/stoc.jpg"
+					src="/images/stoc.jpg"
 				/>
 			</slot>
 		</div>
