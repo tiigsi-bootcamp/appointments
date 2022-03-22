@@ -16,7 +16,9 @@ const handleLogin = async function () {
   if (token === '') {
     invalid.value = true;
   } else {
-    console.log('Token is ', token);
+     invalid.value = false;
+    localStorage.setItem('token', token);
+    console.log(localStorage);
   }
 };
 </script>
