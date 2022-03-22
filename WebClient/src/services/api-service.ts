@@ -26,10 +26,29 @@ export class ApiService {
 		}
 
 		url += '?' + query.toString();
-		
+
 		const response = await fetch(API_URL + url);
 		const data = await response.json();
 
 		return data as T;
+	}
+
+	static async login(data: { email: string, password: string }) {
+		const url = API_URL + 'auth/login';
+		const response = await fetch(url, {
+			method: 'POST',
+			body: JSON.stringify(data),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+
+		if (!response.ok) {
+			return '';
+		}
+
+		const result = await response.json();
+		const token = result.token;
+		return token as string;
 	}
 }

@@ -10,7 +10,7 @@ namespace appointments.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Password",
+                name: "PasswordHash",
                 table: "Users",
                 type: "text",
                 nullable: true);
@@ -35,7 +35,7 @@ namespace appointments.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Password",
+                name: "PasswordHash",
                 table: "Users");
 
             migrationBuilder.AlterColumn<TimeOnly>(

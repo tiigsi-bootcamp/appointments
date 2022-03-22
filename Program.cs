@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,8 @@ builder.Services.AddAuthentication("Bearer") // Token: JWT = Json Web Token
 			IssuerSigningKey = key
 		};
 	});
+
+builder.Services.AddScoped<PasswordHasher<Models.User>>();
 
 // Add Swagger services.
 builder.Services.AddEndpointsApiExplorer();

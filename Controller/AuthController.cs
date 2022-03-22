@@ -15,10 +15,13 @@ namespace Controllers;
 public class AuthController : ControllerBase
 {
 	private readonly AppointmentsDbContext _context;
+	private readonly PasswordHasher<Models.User> _passwordHasher;
 
-	public AuthController(AppointmentsDbContext context)
+	public AuthController(AppointmentsDbContext context,
+		PasswordHasher<Models.User> passwordHasher)
 	{
 		_context = context;
+		_passwordHasher = passwordHasher;
 	}
 
 	// For testing to set user passwords manually.
@@ -32,10 +35,9 @@ public class AuthController : ControllerBase
 			return BadRequest("Invalid user");
 		}
 
-		var hasher = new PasswordHasher<Models.User>();
-		var hashedPassword = hasher.HashPassword(user, viewModel.Password);
+		var hashedPassword = _passwordHasher.HashPassword(user, viewModel.Password);
 
-		user.Password = hashedPassword;
+		user.PasswordHash = hashedPassword;
 		await _context.SaveChangesAsync(HttpContext.RequestAborted);
 
 		return Ok(hashedPassword);
@@ -56,8 +58,7 @@ public class AuthController : ControllerBase
 			return BadRequest("Invalid login attempt.");
 		}
 
-		var hasher = new PasswordHasher<Models.User>();
-		var verificationResult = hasher.VerifyHashedPassword(user, user.Password, viewModel.Password);
+		var verificationResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, viewModel.Password);
 		if (verificationResult is not PasswordVerificationResult.Success)
 		{
 			return BadRequest("Invalid login attempt.");
