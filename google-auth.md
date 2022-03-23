@@ -23,3 +23,5 @@ const result = authInstance.signIn();
 // Handle the result.
 console.log('Login result', result);
 ```
+
+* Get ```access_token``` and send it to the backend to exchange for a local ```jwt```

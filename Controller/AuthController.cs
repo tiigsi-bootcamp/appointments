@@ -49,7 +49,6 @@ public class AuthController : ControllerBase
 	public async Task<IActionResult> Login([FromBody] LoginViewModel viewModel)
 	{
 		// TODO: Implement Google login.
-		// TODO: Implement password login.
 
 		var user = await _context.Users
 			.SingleOrDefaultAsync(u => u.Email == viewModel.Email);

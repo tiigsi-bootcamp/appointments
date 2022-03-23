@@ -2,6 +2,16 @@
 import { ref } from 'vue';
 import { ApiService } from '../services/api-service';
 
+const gapi = (window as any)['gapi'];
+
+setTimeout(async () => {
+  await gapi.load("auth2", async function () {
+    await gapi.auth2.init({ client_id: '385352880967-jn9jkdi0a3lheu4oc3q71jhu7bj820eh.apps.googleusercontent.com' });
+  });
+
+  console.log('Gapi is ready!');
+}, 500);
+
 const invalid = ref(false);
 
 const email = ref('');
@@ -16,11 +26,21 @@ const handleLogin = async function () {
   if (token === '') {
     invalid.value = true;
   } else {
-     invalid.value = false;
+    invalid.value = false;
     localStorage.setItem('token', token);
     console.log(localStorage);
   }
 };
+
+const loginWithGoogle = async () => {
+  const authInstance = gapi.auth2.getAuthInstance();
+
+  const result = await authInstance.signIn();
+  console.log('Google Auth result', result);
+
+  const authResult = await authInstance.currentUser.get().getAuthResponse();
+  console.log('Final result', authResult.id_token);
+}
 </script>
 
 <template>
@@ -65,6 +85,8 @@ const handleLogin = async function () {
 
           <div class="text-center">
             <button type="submit" class="w-full text-white button-form">Login</button>
+
+            <button type="button" @click="loginWithGoogle" class="w-full text-white bg-red-500">Login with Google</button>
 
             <div>
               <p class="text-gray-500 mt-5">
