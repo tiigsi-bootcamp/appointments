@@ -86,9 +86,24 @@ const loginWithGoogle = async () => {
           <div class="text-center">
             <button type="submit" class="w-full text-white button-form">Login</button>
 
-            <button type="button" @click="loginWithGoogle" class="w-full text-white bg-red-500">Login with Google</button>
-
             <div>
+            <div class="flex justify-between gap-5">
+                <button
+                  type="button"
+                  class="mt-5 bg-blue-700 text-white px-4 py-2 hover:bg-blue-500 tracking-widest transition font-semibold rounded"
+                >
+                <i class="fab fa-facebook"></i>
+                  Login with Facebook
+                </button>
+                <button
+                  type="button"
+                  @click="googleLogin"
+                  class="mt-5 bg-red-600 text-white px-4 py-2 hover:bg-red-500 tracking-widest transition font-semibold rounded"
+                >
+                <i class="fab fa-google"></i>
+                  Login with Google
+                </button>
+              </div>
               <p class="text-gray-500 mt-5">
                 Don't have an account?
                 <RouterLink class="text-cyan-500" to="/signup">Register</RouterLink>
