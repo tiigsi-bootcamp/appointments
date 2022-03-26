@@ -1,16 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { ApiService } from '../services/api-service';
+import { TokenService } from '../services/token-service';
 
-const gapi = (window as any)['gapi'];
+const gapi = (window as any).gapi;
 
-setTimeout(async () => {
-  await gapi.load("auth2", async function () {
-    await gapi.auth2.init({ client_id: '385352880967-jn9jkdi0a3lheu4oc3q71jhu7bj820eh.apps.googleusercontent.com' });
-  });
-
-  console.log('Gapi is ready!');
-}, 500);
+await gapi.load("auth2", async function () {
+  await gapi.auth2.init({ client_id: '385352880967-jn9jkdi0a3lheu4oc3q71jhu7bj820eh.apps.googleusercontent.com' });
+});
 
 const invalid = ref(false);
 
@@ -18,28 +15,32 @@ const email = ref('');
 const password = ref('');
 
 const handleLogin = async function () {
-  const token = await ApiService.login({
+  const result = await ApiService.login({
     email: email.value,
     password: password.value
   });
 
-  if (token === '') {
-    invalid.value = true;
-  } else {
-    invalid.value = false;
-    localStorage.setItem('token', token);
-    console.log(localStorage);
-  }
+if (!result) {
+  invalid.value = true;
+}
+
+// TODO: Navigate.
 };
 
 const loginWithGoogle = async () => {
   const authInstance = gapi.auth2.getAuthInstance();
 
-  const result = await authInstance.signIn();
-  console.log('Google Auth result', result);
+  await authInstance.signIn();
 
-  const authResult = await authInstance.currentUser.get().getAuthResponse();
-  console.log('Final result', authResult.id_token);
+  const googleUser = authInstance.currentUser.get();
+  const token = googleUser.getAuthResponse().id_token;
+
+  const result = await ApiService.loginWithProvider({ provider: 'Google', token });
+
+  const user = TokenService.decode();
+  console.log('Current user', user?.name);
+
+  // TODO: Navigate to other pages...
 }
 </script>
 
@@ -87,21 +88,21 @@ const loginWithGoogle = async () => {
             <button type="submit" class="w-full text-white button-form">Login</button>
 
             <div>
-            <div class="flex justify-between gap-5">
+              <div class="flex flex-col justify-between">
+                <button
+                  type="button"
+                  @click="loginWithGoogle"
+                  class="mt-5 bg-red-600 text-white px-4 py-2 hover:bg-red-500 tracking-widest transition font-semibold rounded"
+                >
+                  <i class="fab fa-google"></i>
+                  Login with Google
+                </button>
                 <button
                   type="button"
                   class="mt-5 bg-blue-700 text-white px-4 py-2 hover:bg-blue-500 tracking-widest transition font-semibold rounded"
                 >
-                <i class="fab fa-facebook"></i>
+                  <i class="fab fa-facebook"></i>
                   Login with Facebook
-                </button>
-                <button
-                  type="button"
-                  @click="googleLogin"
-                  class="mt-5 bg-red-600 text-white px-4 py-2 hover:bg-red-500 tracking-widest transition font-semibold rounded"
-                >
-                <i class="fab fa-google"></i>
-                  Login with Google
                 </button>
               </div>
               <p class="text-gray-500 mt-5">

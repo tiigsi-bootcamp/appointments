@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Data;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -48,8 +49,6 @@ public class AuthController : ControllerBase
 	[AllowAnonymous]
 	public async Task<IActionResult> Login([FromBody] LoginViewModel viewModel)
 	{
-		// TODO: Implement Google login.
-
 		var user = await _context.Users
 			.SingleOrDefaultAsync(u => u.Email == viewModel.Email);
 		if (user is null)
@@ -63,6 +62,74 @@ public class AuthController : ControllerBase
 			return BadRequest("Invalid login attempt.");
 		}
 
+		var result = await CreateToken(user);
+
+		return Ok(result);
+	}
+
+	// POST /auth/social-login
+	[HttpPost("social-login")]
+	[AllowAnonymous]
+	public async Task<IActionResult> Login([FromBody] SocialLoginViewModel viewModel)
+	{
+		if (!viewModel.Provider.Equals("Google", StringComparison.OrdinalIgnoreCase))
+		{
+			return BadRequest("Selected provider is not supported.");
+		}
+
+		if (string.IsNullOrEmpty(viewModel.Token))
+		{
+			return BadRequest("Invalid login attempt.");
+		}
+
+		GoogleJsonWebSignature.Payload? socialUser = null;
+
+		try
+		{
+			var validationSettings = new GoogleJsonWebSignature.ValidationSettings
+			{
+				Audience = new string[] { "385352880967-jn9jkdi0a3lheu4oc3q71jhu7bj820eh.apps.googleusercontent.com" }
+			};
+
+			socialUser = await GoogleJsonWebSignature.ValidateAsync(viewModel.Token, validationSettings);
+		}
+		catch
+		{
+			return BadRequest("Invalid login attempt.");
+		}
+
+		if (socialUser is null)
+		{
+			return BadRequest("Invalid login attempt.");
+		}
+
+		var user = await _context.Users
+			.SingleOrDefaultAsync(u => u.Email == socialUser.Email, HttpContext.RequestAborted);
+		if (user is null)
+		{
+			user = new Models.User
+			{
+				FullName = socialUser.Name,
+				Email = socialUser.Email,
+				CreatedAt = DateTime.UtcNow,
+				IsDisabled = false,
+				PasswordHash = "",
+				Address = "",
+				Gender = "N/A"
+			};
+
+			_context.Users.Add(user);
+			await _context.SaveChangesAsync(HttpContext.RequestAborted);
+
+			Console.WriteLine("New user has been created!");
+		}
+
+		var result = await CreateToken(user);
+		return Ok(result);
+	}
+
+	private async Task<object> CreateToken(Models.User user)
+	{
 		var now = DateTime.Now;
 
 		var claims = new List<Claim>
@@ -89,11 +156,9 @@ public class AuthController : ControllerBase
 		var handler = new JwtSecurityTokenHandler();
 		var jwt = handler.WriteToken(token);
 
-		var result = new
+		return new
 		{
 			token = jwt
 		};
-
-		return Ok(result);
 	}
 }

@@ -1,4 +1,5 @@
 import { Doctor, Specialty } from "../models/doctor";
+import { TokenService } from "./token-service";
 
 const API_URL = 'https://localhost:7028/';
 
@@ -44,11 +45,34 @@ export class ApiService {
 		});
 
 		if (!response.ok) {
+			return false;
+		}
+
+		const result = await response.json();
+		const token = result.token;
+		TokenService.save(token);
+		
+		return true;
+	}
+
+	static async loginWithProvider(data: { provider: string, token: string }) {
+		const url = API_URL + 'auth/social-login';
+		const response = await fetch(url, {
+			method: 'POST',
+			body: JSON.stringify(data),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+
+		if (!response.ok) {
 			return '';
 		}
 
 		const result = await response.json();
 		const token = result.token;
-		return token as string;
+		TokenService.save(token);
+		
+		return true;
 	}
 }
