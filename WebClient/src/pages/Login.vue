@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { ApiService } from '../services/api-service';
 import { TokenService } from '../services/token-service';
+
+const router = useRouter();
 
 const gapi = (window as any).gapi;
 
@@ -20,11 +23,11 @@ const handleLogin = async function () {
     password: password.value
   });
 
-if (!result) {
-  invalid.value = true;
-}
+  if (!result) {
+    invalid.value = true;
+  }
 
-// TODO: Navigate.
+  router.push('/doctors');
 };
 
 const loginWithGoogle = async () => {
@@ -40,7 +43,7 @@ const loginWithGoogle = async () => {
   const user = TokenService.decode();
   console.log('Current user', user?.name);
 
-  // TODO: Navigate to other pages...
+  router.push('/');
 }
 </script>
 

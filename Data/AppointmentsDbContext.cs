@@ -15,7 +15,9 @@ public class AppointmentsDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
+        modelBuilder.Entity<User>()
+			.HasIndex(u => u.Email)
+			.IsUnique();
     }
 
 	public DbSet<User> Users { get; set; }

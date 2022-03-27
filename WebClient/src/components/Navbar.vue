@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from '@vue/reactivity';
-import { RouterLink } from 'vue-router';
+import { routerKey, RouterLink } from 'vue-router';
+import { TokenService } from '../services/token-service';
 
 let isMenuHidden = ref(true);
 function hide(){
@@ -55,7 +56,8 @@ function hide(){
           </ul>
         </div>
 
-        <div class="hidden md:flex space-x-2">
+        <div class="hidden md:flex space-x-2"
+          v-if="!TokenService.isLoggedIn.value">
           <RouterLink
             to="/login"
             class="singin button hover:bg-pink-500 hover:text-white"
@@ -63,6 +65,12 @@ function hide(){
           >
           <RouterLink to="/signup" class="singup button button-pink"
             >Signup</RouterLink
+          >
+        </div>
+        <div v-else class="hidden md:flex space-x-2 items-center">
+          <span>{{ TokenService.decode()?.name }}</span>
+          <RouterLink to="/signout" class="singup button button-pink"
+            >Sign out</RouterLink
           >
         </div>
 
@@ -140,7 +148,7 @@ function hide(){
 					</li>
 				</ul>
 
-				<div class="flex space-x-2 pt-10">
+				<div class="flex space-x-2 pt-10" v-if="!TokenService.isLoggedIn.value">
 					<RouterLink @click="hide" to="/login" class="singin button hover:bg-pink-500 hover:text-white">Login</RouterLink>
 					<RouterLink @click="hide" to="/signup" class="singup button button-pink">Signup</RouterLink>
 				</div>

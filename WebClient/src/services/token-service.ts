@@ -1,10 +1,14 @@
+import { ref } from 'vue';
 import { TokenFields } from '../models/token-fields';
 
 export class TokenService {
 	private static _tokenKey = '__token__';
 
+	static isLoggedIn = ref(!!TokenService.get());
+
 	static save(token: string) {
 		localStorage.setItem(this._tokenKey, token);
+		this.isLoggedIn.value = true;
 	}
 
 	static get() {
@@ -30,7 +34,7 @@ export class TokenService {
 		const input = parts[1]
 			.replaceAll('-', '+')
 			.replaceAll('_', '/');
-		
+
 		const decoded = atob(input);
 		return JSON.parse(decoded) as TokenFields;
 	}
