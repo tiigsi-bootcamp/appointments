@@ -66,7 +66,7 @@ export class ApiService {
 		});
 
 		if (!response.ok) {
-			return '';
+			return false;
 		}
 
 		const result = await response.json();

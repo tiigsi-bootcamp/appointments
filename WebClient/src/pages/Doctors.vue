@@ -1,20 +1,11 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import DoctorsCard from "../components/DoctorsCard.vue";
 import { RouterLink } from "vue-router";
 import { Doctor } from "../models/doctor";
-import { ref } from "vue";
 import { ApiService } from "../services/api-service";
 
 let doctors = ref<Doctor[]>([]);
-
-// fetch('https://localhost:7028/Doctors?page=0&size=10')
-//   .then(response => response.json())
-//   .then(json => doctors.value = json);
-
-// const response = await fetch('https://localhost:7028/Doctors?page=0&size=10');
-
-// const result = await response.json();
-// doctors.value = result;
 
 const page = 0;
 const size = 10;
