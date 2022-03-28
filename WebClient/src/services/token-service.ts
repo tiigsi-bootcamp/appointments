@@ -17,6 +17,7 @@ export class TokenService {
 
 	static delete() {
 		localStorage.removeItem(this._tokenKey);
+		this.isLoggedIn.value = false;
 	}
 
 	// Discriminated Unions.
