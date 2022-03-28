@@ -68,7 +68,7 @@ function hide(){
           >
         </div>
         <div v-else class="hidden md:flex space-x-2 items-center">
-          <span>{{ TokenService.decode()?.name }}</span>
+          <span>Hello {{ TokenService.decode()?.name }}!</span>
           <RouterLink to="/signout" class="singup button button-pink"
             >Sign out</RouterLink
           >
