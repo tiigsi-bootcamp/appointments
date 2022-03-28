@@ -7,6 +7,9 @@ let isMenuHidden = ref(true);
 function hide(){
 	isMenuHidden.value = true
 }
+const deleteToken = async () => {
+  TokenService.delete();
+   router.push("/");
 </script>
 
 <template>
@@ -63,7 +66,7 @@ function hide(){
             class="singin button hover:bg-pink-500 hover:text-white"
             >Login</RouterLink
           >
-          <RouterLink to="/signup" class="singup button button-pink"
+          <RouterLink to="/" @click="deleteToken" class="singup button button-pink"
             >Signup</RouterLink
           >
         </div>
