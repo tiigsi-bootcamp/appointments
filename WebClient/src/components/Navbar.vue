@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import { ref } from '@vue/reactivity';
-import { routerKey, RouterLink } from 'vue-router';
+import { routerKey, useRouter, RouterLink } from 'vue-router';
 import { TokenService } from '../services/token-service';
 
+const router = useRouter();
+
 let isMenuHidden = ref(true);
-function hide(){
-	isMenuHidden.value = true
+function hide() {
+  isMenuHidden.value = true
+}
+
+function removeToken() {
+  TokenService.delete();
+  router.push('/');
 }
 </script>
 
@@ -23,19 +30,8 @@ function hide(){
           <div>
             <RouterLink to="/">
               <span
-                class="
-                  block
-                  py-4
-                  text-transparent
-                  bg-clip-text
-                  text-lg
-                  font-bold
-                  bg-gradient-to-r
-                  from-green-500
-                  to-blue-500
-                "
-                >Doctors App</span
-              >
+                class="block py-4 text-transparent bg-clip-text text-lg font-bold bg-gradient-to-r from-green-500 to-blue-500"
+              >Doctors App</span>
             </RouterLink>
           </div>
 
@@ -44,40 +40,24 @@ function hide(){
               <RouterLink to="/" class="menu nav-item">Home</RouterLink>
             </li>
             <li>
-              <RouterLink to="/doctors" class="menu nav-item"
-                >Doctors</RouterLink
-              >
+              <RouterLink to="/doctors" class="menu nav-item">Doctors</RouterLink>
             </li>
             <li>
-              <RouterLink to="/contact" class="menu nav-item"
-                >Contact</RouterLink
-              >
+              <RouterLink to="/contact" class="menu nav-item">Contact {{TokenService.isLoggedIn}}</RouterLink>
             </li>
           </ul>
         </div>
 
-        <div class="hidden md:flex space-x-2"
-          v-if="!TokenService.isLoggedIn.value">
-          <RouterLink
-            to="/login"
-            class="singin button hover:bg-pink-500 hover:text-white"
-            >Login</RouterLink
-          >
-          <RouterLink to="/signup" class="singup button button-pink"
-            >Signup</RouterLink
-          >
+        <div class="hidden md:flex space-x-2" v-if="!TokenService.isLoggedIn.value">
+          <RouterLink to="/login" class="singin button hover:bg-pink-500 hover:text-white">Login</RouterLink>
+          <RouterLink to="/signup" class="singup button button-pink">Signup</RouterLink>
         </div>
         <div v-else class="hidden md:flex space-x-2 items-center">
           <span>{{ TokenService.decode()?.name }}</span>
-          <RouterLink to="/signout" class="singup button button-pink"
-            >Sign out</RouterLink
-          >
+          <RouterLink @click="removeToken" to="/signout" class="singup button button-pink">Sign out</RouterLink>
         </div>
 
-        <button
-          class="md:hidden text-gray-600"
-          @click="isMenuHidden = !isMenuHidden"
-        >
+        <button class="md:hidden text-gray-600" @click="isMenuHidden = !isMenuHidden">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-6 w-6"
@@ -96,63 +76,49 @@ function hide(){
       </div>
 
       <div
-        class="
-          bg-blue-100
-          w-64
-          transform
-          fixed
-          md:hidden
-          left-0
-          top-0
-          h-screen
-          transition
-          flex flex-col
-          space-y-10
-          items-center
-          justify-center
-        "
+        class="bg-blue-100 w-64 transform fixed md:hidden left-0 top-0 h-screen transition flex flex-col space-y-10 items-center justify-center"
         :class="{ '-translate-x-64': isMenuHidden }"
       >
         <h4
-          class="
-            text-4xl
-            font-bold
-            bg-clip-text
-            text-transparent
-            bg-gradient-to-r
-            from-green-500
-            to-blue-500
-          "
-        >
-          Doctors App
-        </h4>
+          class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-blue-500"
+        >Doctors App</h4>
 
-				<ul class="w-64 text-center">
-					<li>
-						<RouterLink @click="hide"
-							to="/"
-							class="menu block border-b border-blue-200 py-5 px-3 font-semibold tracking-widest transition hover:bg-blue-200 rounded-2xl shadow-lg"
-						>Home</RouterLink>
-					</li>
-					<li>
-						<RouterLink @click="hide"
-							to="/doctors"
-							class="menu block border-b border-blue-200 py-5 px-3 font-semibold tracking-widest transition hover:bg-blue-200 rounded-2xl shadow-lg"
-						>Doctor</RouterLink>
-					</li>
-					<li>
-						<RouterLink @click="hide"
-							to="/contact"
-							class="menu block border-b border-blue-200 py-5 px-3 font-semibold tracking-widest transition hover:bg-blue-200 rounded-2xl shadow-lg"
-						>Contact</RouterLink>
-					</li>
-				</ul>
+        <ul class="w-64 text-center">
+          <li>
+            <RouterLink
+              @click="hide"
+              to="/"
+              class="menu block border-b border-blue-200 py-5 px-3 font-semibold tracking-widest transition hover:bg-blue-200 rounded-2xl shadow-lg"
+            >Home</RouterLink>
+          </li>
+          <li>
+            <RouterLink
+              @click="hide"
+              to="/doctors"
+              class="menu block border-b border-blue-200 py-5 px-3 font-semibold tracking-widest transition hover:bg-blue-200 rounded-2xl shadow-lg"
+            >Doctor</RouterLink>
+          </li>
+          <li>
+            <RouterLink
+              @click="hide"
+              to="/contact"
+              class="menu block border-b border-blue-200 py-5 px-3 font-semibold tracking-widest transition hover:bg-blue-200 rounded-2xl shadow-lg"
+            >Contact</RouterLink>
+          </li>
+        </ul>
 
-				<div class="flex space-x-2 pt-10" v-if="!TokenService.isLoggedIn.value">
-					<RouterLink @click="hide" to="/login" class="singin button hover:bg-pink-500 hover:text-white">Login</RouterLink>
-					<RouterLink @click="hide" to="/signup" class="singup button button-pink">Signup</RouterLink>
-				</div>
-			</div>
-		</nav>
-	</div>
+        <div class="flex space-x-2 pt-10" v-if="!TokenService.isLoggedIn.value">
+          <RouterLink
+            @click="hide"
+            to="/login"
+            class="singin button hover:bg-pink-500 hover:text-white"
+          >Login</RouterLink>
+          <RouterLink @click="hide" to="/signup" class="singup button button-pink">Signup</RouterLink>
+        </div>
+        <div v-else class="flex space-x-2 pt-10" >
+          <RouterLink @click="removeToken"  to="#" class="singup button button-pink">Sign out</RouterLink>
+        </div>
+      </div>
+    </nav>
+  </div>
 </template>
