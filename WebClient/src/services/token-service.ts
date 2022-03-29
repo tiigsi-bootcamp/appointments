@@ -5,10 +5,12 @@ export class TokenService {
 	private static _tokenKey = '__token__';
 
 	static isLoggedIn = ref(!!TokenService.get());
-
+	static isDoctor = ref(!!TokenService.decode()?.doctorId)
+	
 	static save(token: string) {
 		localStorage.setItem(this._tokenKey, token);
 		this.isLoggedIn.value = true;
+		TokenService.isDoctor = ref(!!TokenService.decode()?.doctorId)
 	}
 
 	static get() {
@@ -18,6 +20,7 @@ export class TokenService {
 	static delete() {
 		localStorage.removeItem(this._tokenKey);
 		this.isLoggedIn.value = false;
+		this.isDoctor.value = false;
 	}
 
 	// Discriminated Unions.

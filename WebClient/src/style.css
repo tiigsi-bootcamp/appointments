@@ -24,6 +24,9 @@
 .singup.router-link-active {
   @apply  bg-pink-700 px-5 py-2 ;
 }
+.adoctor.router-link-active {
+  @apply border-b-4 bg-green-100  border-green-500
+}
 
 .nav-item {
   @apply py-4 px-2 text-gray-600 hover:text-green-500 transition hover:border-b-4 hover:border-green-500;
