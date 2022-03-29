@@ -12,6 +12,7 @@ import Signup from './pages/Signup.vue';
 import one from './pages/booking1.vue';
 import two from './pages/booking2.vue';
 import Signout from './pages/Signout.vue';
+import DoctorRegister from './pages/DoctorRegister.vue';
 
 import './style.css';
 
@@ -25,12 +26,13 @@ const router = createRouter({
     { path: '/signout', component: Signout },
     { path: '/one', component: one },
     { path: '/two', component: two },
+    { path: '/doctorRegister', component: DoctorRegister },
   ],
   history: createWebHistory(),
 });
 
 router.beforeEach((to) => {
-  if (to.path === '/login' || to.path === '/') {
+  if (to.path === '/login' || to.path === '/' || to.path === '/signup') {
     return true;
   }
 

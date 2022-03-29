@@ -53,6 +53,11 @@ function hide(){
                 >Contact</RouterLink
               >
             </li>
+            <li class="pl-10 mt-2" v-if="TokenService.isLoggedIn.value">
+              <RouterLink v-if="!TokenService.isDoctor.value"  to="/DoctorRegister" class=" p-3 tracking-wider adoctor rounded-t-md font-semibold hover:bg-green-100 text-gray-700  bg-green-300"
+                >Become a Doctor</RouterLink
+              >
+            </li>
           </ul>
         </div>
 
