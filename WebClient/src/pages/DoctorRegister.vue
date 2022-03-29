@@ -58,11 +58,11 @@
             ></textarea>
           </div>
           <div class="flex gap-4 items-center  ">
-            <p class="text-gray-500 text-lg traking-wider">Your Photo :</p>
+            <p class="text-gray-500 text-lg traking-wider">Photo</p>
             <input class="file-upload-input" type="file" onchange="readURL(this)" accept="Image/*">
           </div>
           <div class="flex gap-4 items-center  ">
-            <p class="text-gray-500 text-lg traking-wider">Your Certificate :</p>
+            <p class="text-gray-500 text-lg traking-wider">Certificate</p>
             <input class="file-upload-input" type="file" onchange="readURL(this)" accept="Image/*">
           </div>
 

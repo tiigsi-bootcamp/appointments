@@ -82,8 +82,14 @@ public class DoctorsController : ControllerBase
 
 	// POST /doctors
 	[HttpPost]
-	public async Task<IActionResult> Add([FromBody] DoctorViewModel doctorViewModel) // Over-posting attack.
+	public async Task<IActionResult> Add([FromForm] DoctorViewModel viewModel,
+		[FromServices] IWebHostEnvironment environment)
 	{
+		if (viewModel.Certificate is null || viewModel.Picture is null)
+		{
+			return BadRequest("Please upload all the required files.");
+		}
+
 		var doctor = await _context.Doctors
 			.SingleOrDefaultAsync(d => d.UserId == User.GetId(), HttpContext.RequestAborted);
 		if (doctor is not null)
@@ -91,15 +97,33 @@ public class DoctorsController : ControllerBase
 			return BadRequest("You are already a doctor!");
 		}
 
+		// FileSystem
+		// DB
+		// ThirdParty (Like AWS S3) $$$$$$$
+
+		var filesPath = environment.WebRootPath;
+
+		var avatarExtension = Path.GetExtension(viewModel.Picture.FileName);
+		var avatarFileName = "avatar-" + User.GetId() + avatarExtension;
+
+		using var stream = new FileStream(Path.Combine(filesPath, avatarFileName), FileMode.Create);
+		await viewModel.Picture.CopyToAsync(stream);
+		await stream.FlushAsync();
+
+		// TODO: Complete the certificate saving logic.
+
+		var certificateExtension = Path.GetExtension(viewModel.Certificate.FileName);
+		var certificateFileName = "certificate-" + User.GetId() + certificateExtension;
+
 		doctor = new Doctor
 		{
-			Phone = doctorViewModel.Phone,
-			Specialty = doctorViewModel.Specialty,
-			Bio = doctorViewModel.Bio,
-			Certificate = doctorViewModel.Certificate,
+			Phone = viewModel.Phone,
+			Specialty = viewModel.Specialty,
+			Bio = viewModel.Bio,
+			// Certificate = viewModel.Certificate,
 			CreatedAt = DateTime.UtcNow,
-			Picture = doctorViewModel.Picture,
-			TicketPrice = doctorViewModel.TicketPrice,
+			Picture = avatarFileName,
+			TicketPrice = viewModel.TicketPrice,
 			UserId = User.GetId()
 		};
 

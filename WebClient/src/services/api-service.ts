@@ -51,7 +51,7 @@ export class ApiService {
 		const result = await response.json();
 		const token = result.token;
 		TokenService.save(token);
-		
+
 		return true;
 	}
 
@@ -72,7 +72,7 @@ export class ApiService {
 		const result = await response.json();
 		const token = result.token;
 		TokenService.save(token);
-		
+
 		return true;
 	}
 }
