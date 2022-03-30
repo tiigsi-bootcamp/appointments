@@ -99,7 +99,7 @@ public class DoctorsController : ControllerBase
 
 		// FileSystem
 		// DB
-		// ThirdParty (Like AWS S3) $$$$$$$
+		// ThirdParty (Like AWS S3, Azure Blob Storage) $$$$$$$
 
 		var filesPath = environment.WebRootPath;
 
@@ -108,24 +108,19 @@ public class DoctorsController : ControllerBase
 
 		using var stream = new FileStream(Path.Combine(filesPath, avatarFileName), FileMode.Create);
 		await viewModel.Picture.CopyToAsync(stream);
-		await stream.FlushAsync();
 
-		// TODO: Complete the certificate saving logic.
+		var certificateExtension = Path.GetExtension(viewModel.Certificate.FileName);
+		var certificateFileName = "certificate-" + User.GetId() + certificateExtension;
 
-		 
-            var certificateExtension = Path.GetExtension(doctorVM.Certificate.FileName);
-            var certificateFileName = "certificate-" + User.GetId() + certificateExtension;
-
-            using var certificateStream = new FileStream(Path.Combine(filesPath,certificateFileName), FileMode.Create);
-            await doctorVM.Certificate.CopyToAsync(certificateStream);
-            await certificateStream.FlushAsync();
+		await using var certificateStream = new FileStream(Path.Combine(filesPath, certificateFileName), FileMode.Create);
+		await viewModel.Certificate.CopyToAsync(certificateStream);
 
 		doctor = new Doctor
 		{
 			Phone = viewModel.Phone,
 			Specialty = viewModel.Specialty,
 			Bio = viewModel.Bio,
-			// Certificate = viewModel.Certificate,
+			Certificate = certificateFileName,
 			CreatedAt = DateTime.UtcNow,
 			Picture = avatarFileName,
 			TicketPrice = viewModel.TicketPrice,

@@ -1,4 +1,39 @@
 <script setup lang="ts">
+import { ApiService } from '../services/api-service';
+
+type NewDoctor = {
+  phone?: string;
+  specialty?: string;
+  bio?: string;
+  ticketPrice?: number;
+  picture?: File;
+  certificate?: File;
+};
+
+const doctor: NewDoctor = {};
+
+const setFile = (e: Event, property: 'picture' | 'certificate') => {
+  const inputElement = e.target as HTMLInputElement;
+  const files = inputElement.files;
+  if (!files || files.length < 1) {
+    return;
+  }
+  
+  doctor[property] = files[0];
+}
+
+const saveDoctor = async () => {
+  const data = new FormData();
+  data.append('phone', doctor.phone!);
+  data.append('specialty', doctor.specialty!);
+  data.append('bio', doctor.bio!);
+  data.append('ticketPrice', doctor.ticketPrice!.toString());
+  data.append('picture', doctor.picture!, doctor.picture!.name);
+  data.append('certificate', doctor.certificate!, doctor.certificate!.name);
+
+  const result = await ApiService.upload('doctors', data);
+  console.log('Result', result);
+}
 
 </script>
 
@@ -26,11 +61,13 @@
 
         <form
           class="md:mt-8 flex flex-col space-y-4"
+          @submit.prevent="saveDoctor"
         >
           <div>
             <input
               class="outline-none w-full p-4 rounded ring-1 focus:ring"
               placeholder="Phone"
+              v-model="doctor.phone"
               type="text"
             />
           </div>
@@ -40,6 +77,7 @@
               class="outline-none w-full p-4 rounded ring-1 focus:ring"
               placeholder="Specialty"
               type="text"
+              v-model="doctor.specialty"
             />
           </div>
           <div>
@@ -47,6 +85,7 @@
               class="outline-none w-full p-4 rounded ring-1 focus:ring"
               placeholder="Ticket Price"
               type="text"
+              v-model="doctor.ticketPrice"
             />
           </div>
 
@@ -55,15 +94,16 @@
               class="w-full outline-none py-4 ring-1 focus:ring rounded px-5"
               placeholder="BIO"
               rows="4"
+              v-model="doctor.bio"
             ></textarea>
           </div>
           <div class="flex gap-4 items-center  ">
             <p class="text-gray-500 text-lg traking-wider">Photo</p>
-            <input class="file-upload-input" type="file" onchange="readURL(this)" accept="Image/*">
+            <input class="file-upload-input" type="file" @change="(e) => setFile(e, 'picture')" accept="Image/*">
           </div>
-          <div class="flex gap-4 items-center  ">
+          <div class="flex gap-4 items-center ">
             <p class="text-gray-500 text-lg traking-wider">Certificate</p>
-            <input class="file-upload-input" type="file" onchange="readURL(this)" accept="Image/*">
+            <input class="file-upload-input" type="file" @change="(e) => setFile(e, 'certificate')" accept="Image/*">
           </div>
 
           <div class="text-center pt-5">

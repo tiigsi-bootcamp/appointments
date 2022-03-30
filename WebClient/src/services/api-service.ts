@@ -34,6 +34,22 @@ export class ApiService {
 		return data as T;
 	}
 
+	static async upload(endpoint: string, data: FormData) {
+		const response = await fetch(API_URL + endpoint, {
+			body: data,
+			method: 'POST',
+			headers: {
+				'Authorization': 'Bearer ' + TokenService.get()
+			}
+		});
+
+		if (response.status === 204) {
+			return null;
+		}
+
+		return await response.json();
+	}
+
 	static async login(data: { email: string, password: string }) {
 		const url = API_URL + 'auth/login';
 		const response = await fetch(url, {
