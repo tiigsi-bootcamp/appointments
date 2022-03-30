@@ -112,8 +112,13 @@ public class DoctorsController : ControllerBase
 
 		// TODO: Complete the certificate saving logic.
 
-		var certificateExtension = Path.GetExtension(viewModel.Certificate.FileName);
-		var certificateFileName = "certificate-" + User.GetId() + certificateExtension;
+		 
+            var certificateExtension = Path.GetExtension(doctorVM.Certificate.FileName);
+            var certificateFileName = "certificate-" + User.GetId() + certificateExtension;
+
+            using var certificateStream = new FileStream(Path.Combine(filesPath,certificateFileName), FileMode.Create);
+            await doctorVM.Certificate.CopyToAsync(certificateStream);
+            await certificateStream.FlushAsync();
 
 		doctor = new Doctor
 		{
